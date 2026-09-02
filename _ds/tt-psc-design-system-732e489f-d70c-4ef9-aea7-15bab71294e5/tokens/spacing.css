@@ -1,0 +1,17 @@
+:root{
+--space-1:4px;
+--space-2:8px;
+--space-3:12px;
+--space-4:16px;
+--space-5:24px;
+--space-6:32px;
+--space-7:48px;
+--space-8:64px;
+/* Brandbook: buttons, frames & shapes always have rounded corners */
+--radius-sm:8px;
+--radius-md:12px;
+--radius-lg:20px;
+--radius-pill:999px;
+--shadow-card:0 2px 12px rgba(123,45,133,0.10);
+--shadow-pop:0 8px 28px rgba(26,26,26,0.16);
+}

@@ -1,0 +1,42 @@
+:root{
+/* Primary palette — Brandbook p.10 */
+--creative-purple:#7B2D85; /* PANTONE 526 C */
+--flat-pink:#D03A8C; /* PANTONE 240 C */
+/* Secondary palette */
+--classic-heather:#ECD3ED; /* PANTONE 677 CP */
+--strategic-grey:#D9D9D9; /* PANTONE Cool Gray 2 CP */
+--modern-green:#64B237; /* PANTONE 7737 C */
+/* Brand gradient — Creative Purple → Flat Pink, 50/50 */
+--brand-gradient:linear-gradient(90deg,#7B2D85 0%,#D03A8C 100%); /* @kind color */
+/* Derived tints & shades (oklch-derived from brand hexes) */
+--purple-dark:#5E2166;
+--purple-tint:#F4EAF5;
+--pink-tint:#FAE4F0;
+--green-tint:#EAF5E0;
+/* Neutrals */
+--ink:#1A1A1A;
+--grey-700:#4D4D4D;
+--grey-500:#767676;
+--grey-300:#B3B3B3;
+--grey-100:#F2F2F2;
+--white:#FFFFFF;
+/* Semantic aliases */
+--text-heading:var(--ink);
+--text-body:var(--grey-700);
+--text-muted:var(--grey-500);
+--text-on-brand:var(--white);
+--surface-page:var(--white);
+--surface-card:var(--white);
+--surface-subtle:var(--grey-100);
+--surface-brand:var(--creative-purple);
+--surface-accent-tint:var(--purple-tint);
+--border-default:var(--strategic-grey);
+--border-strong:var(--grey-300);
+--border-accent:var(--classic-heather);
+--accent-primary:var(--creative-purple);
+--accent-secondary:var(--flat-pink);
+--success:var(--modern-green);
+--link:var(--creative-purple);
+--link-hover:var(--flat-pink);
+--focus-ring:0 0 0 3px var(--classic-heather);
+}
