@@ -254,22 +254,49 @@ faqItems.forEach(item=>{
     if(!open){item.classList.add("open");btn.setAttribute("aria-expanded","true");}
   });
 });
-/* ---- HubSpot-Embed erst nach Einwilligung laden (Zwei-Klick-L\u00f6sung, TTDSG \u00a725) ---- */
-(function(){
-  const gate=$(".hs-consent"),btn=$("#hs-consent-btn");
-  if(!gate)return;
-  function load(){
-    if(document.getElementById("hs-embed-js"))return;
-    const s=document.createElement("script");
-    s.id="hs-embed-js";s.defer=true;
-    s.src="https://js-eu1.hsforms.net/forms/embed/developer/26573714.js";
-    document.head.appendChild(s);
-    gate.style.display="none";
-  }
-  let ok=false;try{ok=localStorage.getItem("ttpsc_hs_consent")==="1";}catch(e){}
-  if(ok)load();
-  else if(btn)btn.addEventListener("click",()=>{try{localStorage.setItem("ttpsc_hs_consent","1");}catch(e){}load();});
-})();
+/* ---- Formular \u2192 HubSpot Forms API v3 (unauthentifiziert, kein Token im Frontend) ---- */
+/* >>> WHITEPAPER-PDF: NUR DIESE EINE ZEILE ANPASSEN <<< */
+const WHITEPAPER_URL="assets/whitepaper-engineering-intelligence-de.pdf";
+const HS_ENDPOINT="https://api.hsforms.com/submissions/v3/integration/submit/26573714/8b973dcb-3b09-414e-8acd-60a832378dc8";
+const HS_CAMPAIGN_FIELD="lead_quelle"; /* interner Feldname der Kampagnen-Eigenschaft in HubSpot; ""=nicht mitsenden */
+const HS_CAMPAIGN_VALUE="LP AI Aerospace & Defense";
+const form=$(".cform");
+if(form){
+  const REQ=[["firstname","Bitte Vornamen angeben."],["lastname","Bitte Nachnamen angeben."],["company","Bitte Unternehmen angeben."],["email","Bitte eine g\u00fcltige E-Mail-Adresse angeben."],["consent","Bitte der Verarbeitung zustimmen."]];
+  const mailOK=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  function mark(input,msg){const lab=input.closest("label");let el=lab.querySelector(".field-err");if(!el){el=document.createElement("span");el.className="field-err";lab.appendChild(el);}el.textContent=msg||"";lab.classList.toggle("invalid",!!msg);}
+  form.addEventListener("submit",async e=>{
+    e.preventDefault();
+    const btn=form.querySelector('button[type="submit"]'),ok=$(".ok",form),err=$(".err",form);
+    ok.style.display="none";err.style.display="none";
+    let firstBad=null;
+    REQ.forEach(([n,msg])=>{const el=form.elements[n];
+      const bad=el.type==="checkbox"?!el.checked:(n==="email"?!mailOK(String(el.value).trim()):!String(el.value).trim());
+      mark(el,bad?msg:"");if(bad&&!firstBad)firstBad=el;});
+    if(firstBad){firstBad.focus();return;}
+    btn.disabled=true;const btxt=btn.textContent;btn.textContent="Wird gesendet \u2026";
+    const base=["firstname","lastname","company","email"].map(n=>({objectTypeId:"0-1",name:n,value:String(form.elements[n].value).trim()}));
+    const hutk=(document.cookie.match(/(?:^|;\s*)hubspotutk=([^;]*)/)||[])[1];
+    const send=withCampaign=>{
+      const fields=base.slice();
+      if(withCampaign&&HS_CAMPAIGN_FIELD)fields.push({objectTypeId:"0-1",name:HS_CAMPAIGN_FIELD,value:HS_CAMPAIGN_VALUE});
+      return fetch(HS_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({submittedAt:Date.now(),fields,
+        context:Object.assign({pageUri:location.href,pageName:document.title},hutk?{hutk}:{}),
+        legalConsentOptions:{consent:{consentToProcess:true,text:"Ich stimme zu, dass TT PSC meine Angaben zur Bearbeitung meiner Anfrage speichert und verarbeitet.",communications:[]}}})});
+    };
+    try{
+      let r=await send(true);
+      if(!r.ok&&r.status===400&&HS_CAMPAIGN_FIELD)r=await send(false); /* Kampagnen-Feld existiert nicht im Formular \u2192 ohne erneut senden */
+      if(!r.ok)throw new Error("HTTP "+r.status);
+      ok.style.display="block";btn.textContent="Anfrage gesendet";
+      form.querySelectorAll("input").forEach(el=>{if(el.type==="checkbox")el.checked=false;else el.value="";});
+      if(WHITEPAPER_URL&&WHITEPAPER_URL!=="HIER_PDF_URL_EINTRAGEN")window.open(WHITEPAPER_URL,"_blank","noopener");
+    }catch(ex){
+      console.warn("[form] HubSpot-\u00dcbermittlung fehlgeschlagen:",ex);
+      err.style.display="block";btn.disabled=false;btn.textContent=btxt;
+    }
+  });
+}
 /* ---- Resize: Modus neu bewerten (einfach: reload-frei nur Breite) ---- */
 let wasWide=wide();
 addEventListener("resize",()=>{if(wide()!==wasWide)location.reload();});

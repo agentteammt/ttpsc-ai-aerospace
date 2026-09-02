@@ -317,14 +317,16 @@
 </div>
 <div data-reveal data-reveal-delay="300" style="margin-top:20px"><a class="pill pill-b on-dark" href="mailto:andreas.kratz@ttpsc.com?subject=Engineering-AI-Assessment" data-cursor="Anfragen">Engineering-AI-Assessment anfragen</a></div>
 </div>
-<div class="cform" data-reveal data-reveal-delay="360">
-<div class="hs-consent">
-<p><strong>Whitepaper anfordern</strong></p>
-<p>Zum Anzeigen des Anfrage-Formulars wird der Dienst HubSpot (EU-Rechenzentrum) geladen, der dabei Cookies setzen kann. Mit Klick auf „Formular laden" stimmen Sie dem zu. Weitere Informationen: <a href="https://ttpsc.com/en/policies/" target="_blank" rel="noopener">Policies and Regulations</a>.</p>
-<button class="pill pill-a" type="button" id="hs-consent-btn" data-cursor="Laden">Formular laden &amp; zustimmen</button>
-</div>
-<div class="hs-form-html" data-region="eu1" data-form-id="8b973dcb-3b09-414e-8acd-60a832378dc8" data-portal-id="26573714"></div>
-</div>
+<form class="cform" data-reveal data-reveal-delay="360" novalidate>
+<label>Vorname<input type="text" name="firstname" required autocomplete="given-name"></label>
+<label>Nachname<input type="text" name="lastname" required autocomplete="family-name"></label>
+<label>Unternehmen<input type="text" name="company" required autocomplete="organization"></label>
+<label>E-Mail<input type="email" name="email" required autocomplete="email"></label>
+<label class="consent"><input type="checkbox" name="consent" required><span>Ich stimme zu, dass TT PSC meine Angaben zur Bearbeitung meiner Anfrage speichert und verarbeitet. Weitere Informationen in den <a href="https://ttpsc.com/en/policies/" target="_blank" rel="noopener">Policies and Regulations</a>.</span></label>
+<button class="pill pill-a" type="submit" data-cursor="Download">Whitepaper herunterladen</button>
+<p class="ok">Vielen Dank! Das Whitepaper öffnet sich in einem neuen Tab – Sie erhalten es zusätzlich per E-Mail.</p>
+<p class="err">Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut oder schreiben Sie direkt an <a href="mailto:andreas.kratz@ttpsc.com">andreas.kratz@ttpsc.com</a>.</p>
+</form>
 </div>
 </section>
 
