@@ -1,0 +1,7 @@
+# ai-aerospace.teammt.de
+User-agent: *
+Allow: /
+Disallow: /impressum
+Disallow: /datenschutz
+
+Sitemap: https://ai-aerospace.teammt.de/sitemap.xml
