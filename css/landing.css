@@ -43,17 +43,6 @@ h2+.lead,h2+p.lead{margin-top:clamp(18px,2.6vh,30px)}
 .site-nav a{text-transform:uppercase;font-weight:600;letter-spacing:.2em;font-size:12px;color:var(--ink);text-decoration:none;padding:8px 2px}
 .site-nav a:hover{color:var(--flat-pink)}
 .site-header .pill{padding:10px 22px;min-height:44px;font-size:13px}
-@media(max-width:899px){
-.site-nav{display:none}
-.hero-inner{grid-template-columns:1fr;padding:100px clamp(20px,5vw,40px) 72px;gap:28px}
-.hero-copy h1{max-width:none}
-.hero-badge-zone{order:-1}
-.hero-badge{width:min(46vw,190px)}
-.hero-points li{font-size:15.5px}
-.hero-scrollhint{display:none}
-.contact-person{flex-wrap:wrap}
-.uc-box ol{gap:8px}
-}
 /* Reveal */
 [data-reveal].pre{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;will-change:opacity,transform}
 [data-reveal].pre.in{opacity:1;transform:none}
@@ -158,7 +147,10 @@ body.scrub .scene{width:100vw;height:100vh;display:flex;align-items:center;justi
 .s4-final{max-width:var(--maxw);margin:clamp(40px,6vh,72px) auto 0;padding:0 var(--pad-x);text-align:center}
 body.scrub .s4-final{position:absolute;left:0;right:0;bottom:clamp(20px,4vh,44px);margin:0 auto;z-index:3}
 .s4-final p{display:inline-block;background:var(--brand-gradient);color:#fff;font-weight:700;border-radius:999px;padding:14px 34px;font-size:clamp(14px,1.3vw,19px)}
-@media(max-width:899px){.scene-grid{grid-template-columns:1fr}.dock{position:static;margin-top:10px;display:inline-block}.s4-circle{margin-bottom:8px}.phase-chip{transform:translate(-50%,-50%) rotate(var(--a)) translateY(calc(min(38vw,270px)*-1)) rotate(calc(var(--a)*-1))}}
+@media(max-width:899px){.scene-grid{grid-template-columns:1fr}.dock{position:static;margin-top:10px;display:inline-block}.s4-circle{margin-bottom:8px;overflow:visible}.phase-chip{font-size:10px;padding:5px 10px;max-width:38vw;white-space:normal;text-align:center;line-height:1.2;transform:translate(-50%,-50%) rotate(var(--a)) translateY(calc(min(34vw,270px)*-1)) rotate(calc(var(--a)*-1))}}
+/* Schutz gegen horizontales Scrollen auf schmalen Viewports */
+@media(max-width:899px){.s4-wrap,.s4-stage,.s4-track,.scene,.scene-grid{overflow-x:clip}}
+
 /* ============ S5 Use Case ============ */
 .s5-head{padding:var(--sec-y) 0 0}
 .s5-headgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
@@ -290,3 +282,20 @@ body.cursor-on #cur-ring{display:flex}
 body.cursor-on a,body.cursor-on button{cursor:none}
 body.cursor-on{cursor:none}
 @media(prefers-reduced-motion:reduce){.hero-in,.hero-badge{opacity:1!important;transform:none!important;transition:none!important}.faq-a{transition:none}.step{opacity:1;transform:none}.fill{transition:none}body.scrub .cform .pill-a{animation:none}}
+
+/* ============================================================
+   Mobile-Overrides (<=899px)
+   MUSS am Dateiende stehen: gleiche Spezifitaet wie die
+   Basisregeln, daher entscheidet die Reihenfolge.
+   ============================================================ */
+@media(max-width:899px){
+.site-nav{display:none}
+.hero-inner{grid-template-columns:1fr;padding:100px clamp(20px,5vw,40px) 72px;gap:28px}
+.hero-copy h1{max-width:none}
+.hero-badge-zone{order:-1}
+.hero-badge{width:min(46vw,190px)}
+.hero-points li{font-size:15.5px}
+.hero-scrollhint{display:none}
+.contact-person{flex-wrap:wrap}
+.uc-box ol{gap:8px}
+}

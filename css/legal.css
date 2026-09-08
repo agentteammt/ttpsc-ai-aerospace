@@ -1,0 +1,23 @@
+/* TT PSC – Rechtstexte (Impressum / Datenschutz) */
+body.legal{background:var(--surface-page);color:var(--text-body);font-family:var(--font-brand),system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.65}
+.legal .site-header{opacity:1;transform:none;position:sticky}
+.legal-main{max-width:820px;margin:0 auto;padding:calc(72px + clamp(40px,8vh,88px)) var(--pad-x) clamp(64px,10vh,120px)}
+.legal-main h1{font-size:clamp(30px,3.6vw,46px);color:var(--text-heading);font-weight:800;line-height:1.15;margin-bottom:10px}
+.legal-main .updated{font-size:var(--fs-small);color:var(--text-muted);margin-bottom:clamp(28px,4vh,44px)}
+.legal-main h2{font-size:clamp(20px,1.9vw,27px);color:var(--text-heading);font-weight:700;margin:clamp(34px,5vh,52px) 0 12px;line-height:1.25}
+.legal-main h3{font-size:var(--fs-h3);color:var(--text-heading);font-weight:600;margin:26px 0 8px}
+.legal-main p,.legal-main li{font-size:var(--fs-body);max-width:70ch}
+.legal-main p{margin-bottom:14px}
+.legal-main ul,.legal-main ol{margin:0 0 16px 22px}
+.legal-main li{margin-bottom:7px}
+.legal-main address{font-style:normal;margin-bottom:14px}
+.legal-main table{width:100%;border-collapse:collapse;margin:8px 0 20px;font-size:var(--fs-small)}
+.legal-main th,.legal-main td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--border-default)}
+.legal-main th{color:var(--text-heading);font-weight:600;white-space:nowrap}
+.legal-main .tablewrap{overflow-x:auto}
+.legal-main .note{background:var(--purple-tint);border-left:3px solid var(--creative-purple);padding:16px 18px;border-radius:0 8px 8px 0;margin:20px 0}
+.legal-main .note p:last-child{margin-bottom:0}
+.legal-main a{color:var(--link);text-underline-offset:3px}
+.legal-main a:hover{color:var(--link-hover)}
+.legal-back{display:inline-flex;align-items:center;gap:8px;margin-top:clamp(36px,5vh,56px);font-weight:600;text-decoration:none}
+.site-footer .foot-nav a[aria-current="page"]{color:#fff;text-decoration:underline;text-underline-offset:4px;font-weight:700}
