@@ -254,12 +254,10 @@ faqItems.forEach(item=>{
     if(!open){item.classList.add("open");btn.setAttribute("aria-expanded","true");}
   });
 });
-/* ---- Formular \u2192 HubSpot Forms API v3 (unauthentifiziert, kein Token im Frontend) ---- */
-/* >>> WHITEPAPER-PDF: NUR DIESE EINE ZEILE ANPASSEN <<< */
+/* ---- Formular \u2192 Cloudflare Worker \u2192 Lettermint (API-Token bleibt serverseitig) ---- */
+/* >>> NUR DIESE ZWEI ZEILEN ANPASSEN (siehe worker/ANLEITUNG.md) <<< */
 const WHITEPAPER_URL="assets/whitepaper-engineering-intelligence-de.pdf";
-const HS_ENDPOINT="https://api.hsforms.com/submissions/v3/integration/submit/26573714/8b973dcb-3b09-414e-8acd-60a832378dc8";
-const HS_CAMPAIGN_FIELD="lead_quelle"; /* interner Feldname der Kampagnen-Eigenschaft in HubSpot; ""=nicht mitsenden */
-const HS_CAMPAIGN_VALUE="LP AI Aerospace & Defense";
+const LEAD_ENDPOINT="https://ttpsc-lead.m-freese.workers.dev";
 const form=$(".cform");
 if(form){
   const REQ=[["firstname","Bitte Vornamen angeben."],["lastname","Bitte Nachnamen angeben."],["company","Bitte Unternehmen angeben."],["email","Bitte eine g\u00fcltige E-Mail-Adresse angeben."],["consent","Bitte der Verarbeitung zustimmen."]];
@@ -274,29 +272,29 @@ if(form){
       const bad=el.type==="checkbox"?!el.checked:(n==="email"?!mailOK(String(el.value).trim()):!String(el.value).trim());
       mark(el,bad?msg:"");if(bad&&!firstBad)firstBad=el;});
     if(firstBad){firstBad.focus();return;}
+    if(LEAD_ENDPOINT.includes("HIER-WORKER-URL")){console.warn("[form] LEAD_ENDPOINT nicht gesetzt");err.style.display="block";return;}
     btn.disabled=true;const btxt=btn.textContent;btn.textContent="Wird gesendet \u2026";
-    const base=["firstname","lastname","company","email"].map(n=>({objectTypeId:"0-1",name:n,value:String(form.elements[n].value).trim()}));
-    const hutk=(document.cookie.match(/(?:^|;\s*)hubspotutk=([^;]*)/)||[])[1];
-    const send=withCampaign=>{
-      const fields=base.slice();
-      if(withCampaign&&HS_CAMPAIGN_FIELD)fields.push({objectTypeId:"0-1",name:HS_CAMPAIGN_FIELD,value:HS_CAMPAIGN_VALUE});
-      return fetch(HS_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({submittedAt:Date.now(),fields,
-        context:Object.assign({pageUri:location.href,pageName:document.title},hutk?{hutk}:{}),
-        legalConsentOptions:{consent:{consentToProcess:true,text:"Ich stimme zu, dass TT PSC meine Angaben zur Bearbeitung meiner Anfrage speichert und verarbeitet.",communications:[]}}})});
-    };
+    const payload={consent:true,page:location.href,source:"LP AI Aerospace & Defense",website:form.elements.website?form.elements.website.value:""};
+    ["firstname","lastname","company","email"].forEach(n=>payload[n]=String(form.elements[n].value).trim());
     try{
-      let r=await send(true);
-      if(!r.ok&&r.status===400&&HS_CAMPAIGN_FIELD)r=await send(false); /* Kampagnen-Feld existiert nicht im Formular \u2192 ohne erneut senden */
+      const r=await fetch(LEAD_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
       if(!r.ok)throw new Error("HTTP "+r.status);
-      ok.style.display="block";btn.textContent="Anfrage gesendet";
+      ok.style.display="block";btn.textContent="Anfrage gesendet";track("Whitepaper Download");
       form.querySelectorAll("input").forEach(el=>{if(el.type==="checkbox")el.checked=false;else el.value="";});
-      if(WHITEPAPER_URL&&WHITEPAPER_URL!=="HIER_PDF_URL_EINTRAGEN")window.open(WHITEPAPER_URL,"_blank","noopener");
+      if(WHITEPAPER_URL)window.open(WHITEPAPER_URL,"_blank","noopener");
     }catch(ex){
-      console.warn("[form] HubSpot-\u00dcbermittlung fehlgeschlagen:",ex);
+      console.warn("[form] \u00dcbermittlung fehlgeschlagen:",ex);
       err.style.display="block";btn.disabled=false;btn.textContent=btxt;
     }
   });
 }
+/* ---- Analytics-Events (tool-neutral): feuert an Plausible (window.plausible) oder GA4 (window.gtag), je nachdem welches Snippet in index.html liegt ---- */
+function track(name,props){try{if(window.plausible)window.plausible(name,props?{props}:undefined);else if(window.gtag)window.gtag("event",name.toLowerCase().replace(/[^a-z0-9]+/g,"_"),props||{});}catch(e){}}
+document.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;const h=a.getAttribute("href")||"",t=(a.textContent||"").trim().slice(0,60);
+  if(h.startsWith("mailto:"))track("Assessment Anfrage",{cta:t});
+  else if(a.classList.contains("pill")&&h.startsWith("#"))track("CTA Klick",{cta:t,ziel:h.slice(1)});
+  else if(a.classList.contains("pill")&&/^https?:/.test(h))track("Outbound Klick",{ziel:h});});
+if(form&&"IntersectionObserver"in window){const io=new IntersectionObserver(es=>{if(es.some(x=>x.isIntersecting)){track("Formular erreicht");io.disconnect();}},{threshold:.4});io.observe(form);}
 /* ---- Resize: Modus neu bewerten (einfach: reload-frei nur Breite) ---- */
 let wasWide=wide();
 addEventListener("resize",()=>{if(wide()!==wasWide)location.reload();});
