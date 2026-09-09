@@ -288,8 +288,8 @@ if(form){
     }
   });
 }
-/* ---- Analytics-Events (tool-neutral): feuert an Plausible (window.plausible) oder GA4 (window.gtag), je nachdem welches Snippet in index.html liegt ---- */
-function track(name,props){try{if(window.plausible)window.plausible(name,props?{props}:undefined);else if(window.gtag)window.gtag("event",name.toLowerCase().replace(/[^a-z0-9]+/g,"_"),props||{});}catch(e){}}
+/* ---- Analytics-Events (tool-neutral): feuert an Vercel Analytics (window.va), Plausible (window.plausible) oder GA4 (window.gtag), je nachdem welches Snippet in index.html liegt ---- */
+function track(name,props){try{if(window.va)window.va("event",{name,data:props||{}});else if(window.plausible)window.plausible(name,props?{props}:undefined);else if(window.gtag)window.gtag("event",name.toLowerCase().replace(/[^a-z0-9]+/g,"_"),props||{});}catch(e){}}
 document.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;const h=a.getAttribute("href")||"",t=(a.textContent||"").trim().slice(0,60);
   if(h.startsWith("mailto:"))track("Assessment Anfrage",{cta:t});
   else if(a.classList.contains("pill")&&h.startsWith("#"))track("CTA Klick",{cta:t,ziel:h.slice(1)});
