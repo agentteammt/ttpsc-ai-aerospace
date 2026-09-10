@@ -278,13 +278,13 @@ if(form){
     ["firstname","lastname","company","email"].forEach(n=>payload[n]=String(form.elements[n].value).trim());
     try{
       const r=await fetch(LEAD_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-      if(!r.ok)throw new Error("HTTP "+r.status);
+      if(!r.ok){let d="";try{d=(await r.json()).error||"";}catch(_){}throw new Error("HTTP "+r.status+(d?" – "+d:""));}
       ok.style.display="block";btn.textContent="Anfrage gesendet";track("Whitepaper Download");
       form.querySelectorAll("input").forEach(el=>{if(el.type==="checkbox")el.checked=false;else el.value="";});
       if(WHITEPAPER_URL)window.open(WHITEPAPER_URL,"_blank","noopener");
     }catch(ex){
       console.warn("[form] \u00dcbermittlung fehlgeschlagen:",ex);
-      err.style.display="block";btn.disabled=false;btn.textContent=btxt;
+      err.textContent="Senden fehlgeschlagen ("+(ex&&ex.message||"Netzwerk")+"). Bitte erneut versuchen oder direkt an andreas.kratz@ttpsc.com schreiben.";err.style.display="block";btn.disabled=false;btn.textContent=btxt;
     }
   });
 }
