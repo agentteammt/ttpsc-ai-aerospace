@@ -7,11 +7,11 @@ const seg=(p,a,b)=>clamp((p-a)/(b-a),0,1);
 const easeOut=t=>1-Math.pow(1-t,3);
 const t0=performance.now();
 /* ---- QA flags & modes ---- */
-const flags=(sessionStorage.getItem("ttpsc_ki_qa_flags")||"").split(",").map(s=>s.trim()).filter(Boolean);
+const flags=[...(sessionStorage.getItem("ttpsc_ki_qa_flags")||"").split(","),...(new URLSearchParams(location.search).get("qa")||"").split(",")].map(s=>s.trim()).filter(Boolean);
 const has=f=>flags.includes(f);
 const mqReduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
-const reduced=mqReduced||has("reduced");
-const finePointer=matchMedia("(pointer: fine)").matches&&!has("touch");
+const reduced=(mqReduced&&!has("desktop"))||has("reduced");
+const finePointer=(matchMedia("(pointer: fine)").matches||has("desktop"))&&!has("touch");
 const wide=()=>innerWidth>=900;
 const scrubOn=finePointer&&!reduced&&wide();
 document.body.classList.add(scrubOn?"scrub":"static");
@@ -301,5 +301,6 @@ addEventListener("resize",()=>{if(wide()!==wasWide)location.reload();});
 /* ---- Dev-API ---- */
 window.__ttpscki={flags,reduced,scrub:scrubOn,perf,
   go:id=>{const el=document.getElementById(id);if(el)scrollTo({top:el.getBoundingClientRect().top+scrollY,behavior:"instant"});},
-  progress:()=>Object.fromEntries(ctrls.map(c=>[c.w.className.split(" ")[0],+progressOf(c.w).toFixed(3)]))};
+  progress:()=>Object.fromEntries(ctrls.map(c=>[c.w.className.split(" ")[0],+progressOf(c.w).toFixed(3)])),
+  tick:()=>{if(!scrubOn)return;ctrls.forEach(c=>c.fn(progressOf(c.w)));stackUpdate();roadmapUpdate();}};
 })();
