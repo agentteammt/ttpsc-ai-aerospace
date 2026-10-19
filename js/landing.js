@@ -289,7 +289,7 @@ if(form){
   });
 }
 /* ---- Analytics-Events (tool-neutral): feuert an Vercel Analytics (window.va), Plausible (window.plausible) oder GA4 (window.gtag), je nachdem welches Snippet in index.html liegt ---- */
-function track(name,props){try{if(window.va)window.va("event",{name,data:props||{}});else if(window.plausible)window.plausible(name,props?{props}:undefined);else if(window.gtag)window.gtag("event",name.toLowerCase().replace(/[^a-z0-9]+/g,"_"),props||{});}catch(e){}}
+function track(name,props){try{if(window.va)window.va("event",{name,data:props||{}});if(window.plausible)window.plausible(name,props?{props}:undefined);if(window.gtag)window.gtag("event",name.toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/[^a-z0-9]+/g,"_"),props||{});}catch(_){}}
 document.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;const h=a.getAttribute("href")||"",t=(a.textContent||"").trim().slice(0,60);
   if(h.startsWith("mailto:"))track("Assessment Anfrage",{cta:t});
   else if(a.classList.contains("pill")&&h.startsWith("#"))track("CTA Klick",{cta:t,ziel:h.slice(1)});
@@ -304,3 +304,15 @@ window.__ttpscki={flags,reduced,scrub:scrubOn,perf,
   progress:()=>Object.fromEntries(ctrls.map(c=>[c.w.className.split(" ")[0],+progressOf(c.w).toFixed(3)])),
   tick:()=>{if(!scrubOn)return;ctrls.forEach(c=>c.fn(progressOf(c.w)));stackUpdate();roadmapUpdate();}};
 })();
+
+/* ---- Cookie-Einwilligung (GA4 Consent Mode v2) ---- */
+(function(){const KEY="ttpsc_consent",b=document.getElementById("cc-banner");if(!b)return;
+let v=null;try{v=localStorage.getItem(KEY);}catch(_){}
+const sync=()=>{document.body.classList.toggle("cc-showing",!b.hidden);document.documentElement.style.setProperty("--cc-h",b.hidden?"0px":b.offsetHeight+"px");};new MutationObserver(sync).observe(b,{attributes:true,attributeFilter:["hidden"]});addEventListener("resize",sync);
+if(!v)b.hidden=false;
+b.addEventListener("click",e=>{const btn=e.target.closest("[data-cc]");if(!btn)return;const c=btn.dataset.cc;
+  try{localStorage.setItem(KEY,c);}catch(_){}
+  if(window.gtag)gtag("consent","update",{analytics_storage:c});
+  if(c==="granted"&&window.gtag)gtag("event","page_view");
+  b.hidden=true;});
+document.querySelectorAll(".cc-open").forEach(x=>x.addEventListener("click",()=>{b.hidden=false;}));})();
