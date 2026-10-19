@@ -290,3 +290,14 @@ body.cursor-on{cursor:none}
 
 /* ============ Mobile (nach den Basisregeln, damit sie greifen) ============ */
 @media(max-width:899px){.hero-inner{grid-template-columns:1fr;padding:100px clamp(20px,5vw,40px) 72px;gap:28px}.hero-copy h1{max-width:none}.hero-badge-zone{order:-1}.hero-badge{width:min(46vw,190px)}.hero-points li{font-size:15.5px}.hero-scrollhint{display:none}.contact-person{flex-wrap:wrap}.uc-box ol{gap:8px}}
+
+/* Cookie-Banner */
+.cc-banner{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:80;width:min(920px,calc(100% - 32px));background:#fff;border:1px solid var(--border-accent);border-radius:20px;box-shadow:0 18px 48px rgba(123,45,133,.18);padding:22px 26px;display:flex;gap:24px;align-items:center;font-size:var(--fs-small);line-height:1.55;color:var(--text-body)}
+.cc-banner[hidden]{display:none}
+.cc-title{font-weight:700;font-size:clamp(15px,1.1vw,17px);color:var(--ink);margin-bottom:4px}
+.cc-text{flex:1;min-width:0}
+.cc-actions{display:flex;gap:12px;flex-shrink:0}
+.cc-actions .pill{padding:12px 24px;min-height:44px;font-size:14px;cursor:pointer}
+.foot-nav button.cc-open{background:none;border:0;cursor:pointer;text-align:left;font-family:inherit;font-size:var(--fs-small);font-weight:600;color:rgba(255,255,255,.85);min-height:44px;display:inline-flex;align-items:center;padding:10px 0}.foot-nav button.cc-open:hover{color:#fff}
+body.cc-showing .skip-intro{bottom:calc(20px + var(--cc-h,0px) + 12px)}
+@media(max-width:699px){.cc-banner{flex-direction:column;align-items:stretch;bottom:12px;padding:18px}.cc-actions .pill{flex:1}}
